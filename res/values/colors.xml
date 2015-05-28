@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wandou_ads_green_normal">#ff3baa24</color>
+    <color name="wandou_ads_green_pressed">#ff278918</color>
+    <color name="wandou_ads_green_disabled">#ff98cc8e</color>
+    <color name="wandou_ads_grey_normal">#ffeeeeee</color>
+    <color name="wandou_ads_grey_pressed">#ffe8e8e8</color>
+    <color name="wandou_font_color_black">#ff222222</color>
+    <color name="wandou_font_color_white">#ffffffff</color>
+</resources>
