@@ -130,6 +130,7 @@ public class CustomDialog extends Dialog implements
 					Constant.myMoney+=100;
 					GameActivity.instance.money.setText(""+Constant.myMoney);
 					Constant.good = 2;
+					AppConnect.getInstance(context).awardPoints(100);
 					this.dismiss();
 					//AppConnect.getInstance(context).spendPoints();
 				}else {

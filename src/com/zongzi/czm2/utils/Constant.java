@@ -9,6 +9,7 @@ import com.zongzi.czm2.bean.Message;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Log;
 
 public class Constant {
 	public static final int COUNT = 50;//关卡总数 count*4关
@@ -30,6 +31,7 @@ public class Constant {
 	public static void initAd(Context context){
 		AppConnect.getInstance(context);
 		showad = AppConnect.getInstance(context).getConfig("showad", "no");
+		Log.e("showad",showad);
 		//ad
 		Kdn.setRes(context, "11047");
 		// 设置应用外插屏广告第�?��启动的时间，单位分钟
