@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/js_close"
+    android:layout_width="230.0dip"
+    android:layout_height="230.0dip"
+    android:background="@drawable/js_bg"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20.0dip" >
+
+        <TextView
+            android:id="@+id/js_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="好的撒阶段啊圣诞节了撒了解到啊圣诞节啦记得"
+            android:textColor="@android:color/black"
+            android:textSize="16.0sp" />
+    </LinearLayout>
+
+</LinearLayout>
