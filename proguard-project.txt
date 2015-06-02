@@ -18,3 +18,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep public class cn.waps.** {*;}
+-keep public interface cn.waps.** {*;}
+-dontwarn cn.waps.**
+
+-keep public class com.songzi.hiad.** {*;} 

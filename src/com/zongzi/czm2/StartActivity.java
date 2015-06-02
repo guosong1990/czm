@@ -1,16 +1,21 @@
 package com.zongzi.czm2;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sdm.ehf.Kdn;
+import com.umeng.analytics.MobclickAgent;
 import com.zongzi.czm2.service.DataService;
 import com.zongzi.czm2.utils.Constant;
 
@@ -31,6 +36,9 @@ public class StartActivity extends Activity implements OnClickListener {
 		version.setTypeface(Constant.setFonts(this));
 		dataService = new DataService();
 		dataService.initData();
+		
+		//ad
+		Constant.initAd(this);
 	}
 
 	@Override
@@ -59,6 +67,7 @@ public class StartActivity extends Activity implements OnClickListener {
 		// TODO Auto-generated method stub
 		super.onResume();
 		showProcessgress(false);
+		MobclickAgent.onResume(this);
 	}
 
 	public void showProcessgress(boolean swith) {
@@ -88,4 +97,34 @@ public class StartActivity extends Activity implements OnClickListener {
 
 		}
 	};
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+				// 调用�?��广告
+			// �?��广告
+			Kdn.type2(this,
+					new DialogInterface.OnClickListener() {
+						// 点击事件
+						@Override
+						public void onClick(DialogInterface dialog,
+								int which) {
+							switch (which) {
+							case Dialog.BUTTON_POSITIVE:// yes
+								finish();
+								break;
+							case Dialog.BUTTON_NEGATIVE:// no
+								break;
+							}
+						}
+					});
+		
+		}
+		return true;
+	}
+
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }

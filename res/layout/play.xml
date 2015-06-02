@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_2" >
+    android:background="@drawable/bg_3" >
 
     <LinearLayout
         android:id="@+id/ll_1"
@@ -207,20 +207,19 @@
                 android:id="@+id/imageview_share"
                 android:layout_width="62.0dip"
                 android:layout_height="26.0dip"
-                android:src="@drawable/share" />
+                android:src="@drawable/button_share" />
 
             <ImageView
                 android:id="@+id/imageview_tip"
                 android:layout_width="62.0dip"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_marginLeft="40dp"
                 android:layout_height="26.0dip"
-                android:src="@drawable/tip" />
+                android:src="@drawable/button_find" />
 
-            <ImageView
+<!--             <ImageView
                 android:id="@+id/imageview_clear"
                 android:layout_width="62.0dip"
                 android:layout_height="26.0dip"
-                android:src="@drawable/clear" />
+                android:src="@drawable/clear" /> -->
         </LinearLayout>
 </RelativeLayout>

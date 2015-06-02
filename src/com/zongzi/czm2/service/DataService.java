@@ -336,6 +336,8 @@ public class DataService {
 					pw.println("showAdAmout=3"); // 字符串末尾不需要换行符
 					pw.println("showDialog=1"); // 字符串末尾不需要换行符
 					pw.println("pass_count=1"); // 字符串末尾不需要换行符
+					pw.println("pass_money=200"); // 字符串末尾不需要换行符
+					pw.println("pass_good=1"); // 1没有好评，
 					Log.e("sssss", "sssssssss");
 					pw.close();
 					fw.close();
@@ -352,6 +354,16 @@ public class DataService {
 					if(temString!=null){
 						ssStrings = temString.split("=");
 						Constant.pass_count = Integer.parseInt(ssStrings[1]);
+					}
+					temString = reader.readLine();
+					if(temString!=null){
+						ssStrings = temString.split("=");
+						Constant.myMoney = Integer.parseInt(ssStrings[1]);
+					}
+					temString = reader.readLine();
+					if(temString!=null){
+						ssStrings = temString.split("=");
+						Constant.good = Integer.parseInt(ssStrings[1]);
 					}
 				}
 			} catch (IOException e) {
@@ -373,6 +385,10 @@ public class DataService {
 			temp = "showDialog=2";	
 			sb.append(temp).append("\n");
 			temp = "pass_count="+pass_count;	
+			sb.append(temp).append("\n");
+			temp = "pass_money="+Constant.myMoney;	
+			sb.append(temp).append("\n");
+			temp = "pass_good="+Constant.good;	
 			sb.append(temp).append("\n");
 			BufferedWriter bw = new BufferedWriter(new FileWriter(path + "/" + AD_FILE));
 			bw.write(sb.toString());

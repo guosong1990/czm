@@ -3,31 +3,59 @@ package com.zongzi.czm2;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+import u.aly.m;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import cn.waps.AppConnect;
+import cn.waps.AppListener;
+import cn.waps.UpdatePointsNotifier;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zongzi.czm2.bean.Message;
 import com.zongzi.czm2.service.DataService;
 import com.zongzi.czm2.utils.Constant;
+import com.zongzi.czm2.utils.CustomDialog;
 
-public class GameActivity extends Activity implements OnClickListener {
+public class GameActivity extends Activity implements OnClickListener,
+		UpdatePointsNotifier {
 	LinearLayout linearLayout1, linearLayout2, linearLayout3;
 	View textView1, textView2, textView3, textView4, textView5, textView6,
 			textView7;
 	TextView text1, text2, text3, text4, text5, text6, text7, answerTextView,
-			textview_content, tileView, money;
+			textview_content, tileView;
+	public TextView money;
 	Message message = null;
 	DataService service;
 	int col, raw;
 	int initCount = 1;
-	private Handler handler = new Handler();
+	public static GameActivity instance;
+	boolean tipSwith = false;
+	int showadCout = 0;
+	ImageView share, tip;
+	public Handler handler = new Handler() {
+		@Override
+		public void handleMessage(android.os.Message msg) {
+			switch (msg.what) {
+			case 0:
+				initAnswer();
+				break;
+			case 1:
+				money.setText("" + Constant.myMoney);
+				break;
+			default:
+				break;
+			}
+		};
+	};
 
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
@@ -40,33 +68,49 @@ public class GameActivity extends Activity implements OnClickListener {
 		linearLayout1 = (LinearLayout) findViewById(R.id.linearlayout_content_1);
 		linearLayout2 = (LinearLayout) findViewById(R.id.linearlayout_content_2);
 		linearLayout3 = (LinearLayout) findViewById(R.id.linearlayout_content_3);
+		share = (ImageView) findViewById(R.id.imageview_share);
+		tip = (ImageView) findViewById(R.id.imageview_tip);
+		// clear = (ImageView) findViewById(R.id.imageview_clear);
 		tileView = (TextView) findViewById(R.id.title_level);
+		tip.setOnClickListener(this);
+		share.setOnClickListener(this);
+		// clear.setOnClickListener(this);
 		tileView.setTypeface(Constant.setFonts(this));
-		answerTextView.setTypeface(Constant.setFonts(this));
+		// answerTextView.setTypeface(Constant.setFonts(this));
 		money = (TextView) findViewById(R.id.mymoney);
 		money.setTypeface(Constant.setFonts(this));
 		money.setVisibility(View.VISIBLE);
-		/*
-		 * Thread thread = new Thread(myRunnable); thread.start();
-		 */
-		handler.post(new Runnable() {
-
+		initAnswer();
+		instance = this;
+		// ad
+		// 设置关闭积分墙癿监听接口，必须在showOffers接口之前调用
+		AppConnect.getInstance(this).setOffersCloseListener(new AppListener() {
 			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				initAnswer();
+			public void onOffersClose() {
+				// TODO 关闭积分墙时癿操作代码
+				AppConnect.getInstance(GameActivity.this).getPoints(
+						GameActivity.this);
 			}
-
 		});
 
+		
 	}
 
 	public void initAnswer() {
-		money.setText(""+Constant.myMoney);
+		if(showadCout%5==0){
+			Constant.showpop(this);
+		}
+		showadCout++;
+		
+		tipSwith = false;
+		initCount = 1;
+		money.setText("" + Constant.myMoney);
 		findViewById(R.id.title_back).setVisibility(View.VISIBLE);
 		answerTextView.setText("猜");
 		tileView.setText("第" + Constant.select_count + "关");
 		message = service.getMessageById(this, Constant.select_count);
+		Constant.message = message;
+		Constant.answer = message.getAnswer();
 		textview_content.setText(message.getMessage());
 		col = new Random().nextInt(3) + 1;
 		raw = new Random().nextInt(7) + 1;
@@ -83,22 +127,69 @@ public class GameActivity extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		AppConnect.getInstance(this).getPoints(this);
+		MobclickAgent.onResume(this);
+	}
+
+	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
 		if (v instanceof TextView) {
 			TextView textView = (TextView) v;
 			answerTextView.setText(textView.getText());
 			if (textView.getText().equals(message.getAnswer())) {
-				Toast.makeText(this, "恭喜你答对了,已经进入下一题", Toast.LENGTH_LONG)
-						.show();
-				++Constant.select_count;
 
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
+				++Constant.select_count;
+				CustomDialog dialog = new CustomDialog(this, R.style.mystyle,
+						R.layout.customdialog, 1);
+				dialog.show();
+				Constant.myMoney += 10;
+				AppConnect.getInstance(this).awardPoints(10);
+			} else {
+				if (Constant.myMoney >= 5) {
+					Toast.makeText(this, "错了扣除5个金币", Toast.LENGTH_SHORT).show();
+					Constant.myMoney -= 5;
+					AppConnect.getInstance(this).spendPoints(5);
+					money.setText("" + Constant.myMoney);
+				} else {
+					CustomDialog dialog = new CustomDialog(this,
+							R.style.mystyle, R.layout.customdialog, 2);
+					dialog.show();
+					Toast.makeText(this, "金币已使用完毕！", Toast.LENGTH_SHORT).show();
 				}
-				initAnswer();
 			}
+		}
+		switch (v.getId()) {
+		case R.id.imageview_tip:
+			if (tipSwith) {
+				break;
+			}
+			if (Constant.myMoney >= 20) {
+				Toast.makeText(this, "答案是：" + Constant.answer + ",扣除金币20个",
+						Toast.LENGTH_SHORT).show();
+				Constant.myMoney -= 20;
+				AppConnect.getInstance(this).spendPoints(20);
+				money.setText("" + Constant.myMoney);
+				tipSwith = true;
+			} else {
+				CustomDialog dialog = new CustomDialog(this, R.style.mystyle,
+						R.layout.customdialog, 2);
+				dialog.show();
+				Toast.makeText(this, "金币已使用完毕！", Toast.LENGTH_SHORT).show();
+			}
+			break;
+		case R.id.imageview_share:
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.putExtra(Intent.EXTRA_TEXT, message.getMessage()
+					+ Constant.endString);
+			intent.setType("text/plain");
+			startActivity(intent);
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -110,7 +201,7 @@ public class GameActivity extends Activity implements OnClickListener {
 			Constant.pass_count = Constant.select_count;
 			service.alertAdConfig(Constant.pass_count);
 		}
-
+		MobclickAgent.onPause(this);
 	}
 
 	public void loadView(LinearLayout layout, int col, int raw) {
@@ -136,13 +227,6 @@ public class GameActivity extends Activity implements OnClickListener {
 		text5 = (TextView) textView5.findViewById(R.id.answer_item);
 		text6 = (TextView) textView6.findViewById(R.id.answer_item);
 		text7 = (TextView) textView7.findViewById(R.id.answer_item);
-/*		text1.setTypeface(Constant.setFonts(GameActivity.this));
-		text2.setTypeface(Constant.setFonts(GameActivity.this));
-		text3.setTypeface(Constant.setFonts(GameActivity.this));
-		text4.setTypeface(Constant.setFonts(GameActivity.this));
-		text5.setTypeface(Constant.setFonts(GameActivity.this));
-		text6.setTypeface(Constant.setFonts(GameActivity.this));
-		text7.setTypeface(Constant.setFonts(GameActivity.this));*/
 
 		text1.setText((initCount == col && (localRaw++) == raw) ? message
 				.getAnswer() : createRandomChinse());
@@ -168,6 +252,8 @@ public class GameActivity extends Activity implements OnClickListener {
 		initCount++;
 	}
 
+	int count = 0;
+
 	public String createRandomChinse() {
 		try {
 			String str = null;
@@ -187,5 +273,21 @@ public class GameActivity extends Activity implements OnClickListener {
 
 		return null;
 	}
+
+	@Override
+	public void getUpdatePoints(String arg0, int arg1) {
+		// TODO Auto-generated method stub
+		Constant.myMoney = arg1;
+		android.os.Message message = new android.os.Message();
+		message.what = 1;
+		handler.sendMessage(message);
+	}
+
+	@Override
+	public void getUpdatePointsFailed(String arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
 
 }

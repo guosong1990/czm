@@ -9,7 +9,7 @@
         android:id="@+id/answer_item"
         android:layout_width="40.0dip"
         android:layout_height="40.0dip"
-        android:background="@drawable/box_select"
+        android:background="@drawable/button_answer"
         android:gravity="center"
         android:shadowColor="#ff000000"
         android:shadowDx="1.0"

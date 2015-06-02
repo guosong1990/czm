@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.umeng.analytics.MobclickAgent;
 import com.zongzi.czm2.service.DataService;
 import com.zongzi.czm2.utils.Constant;
 
@@ -34,16 +35,6 @@ public class MenuActivity extends Activity implements OnClickListener {
 		select_title  = (TextView) findViewById(R.id.title_level);
 		select_title.setTypeface(Constant.setFonts(this));
 		initgrade(Constant.COUNT);
-/*		handler.postDelayed(new Runnable(){
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Log.e("loading..", "加载菜单页");
-				
-			}
-			
-		},0);*/
-		
 	}
 
 	
@@ -57,7 +48,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 				Constant.select_count = count;
 				Intent intent = new Intent(this,GameActivity.class);
 				this.startActivity(intent);
-				Toast.makeText(this, "第"+count+"关", Toast.LENGTH_LONG).show();
+				//Toast.makeText(this, "第"+count+"关", Toast.LENGTH_LONG).show();
 			}else{
 				Toast.makeText(this, "亲，此关口还没解锁。", Toast.LENGTH_LONG).show();
 			}
@@ -76,6 +67,7 @@ public class MenuActivity extends Activity implements OnClickListener {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
+		MobclickAgent.onResume(this);
 		handler.postDelayed(new Runnable(){
 			@Override
 			public void run() {
@@ -110,10 +102,6 @@ public class MenuActivity extends Activity implements OnClickListener {
 			grade_tv_2 = (TextView) chView.findViewById(R.id.grade_tv_2);
 			grade_tv_3 = (TextView) chView.findViewById(R.id.grade_tv_3);
 			grade_tv_4 = (TextView) chView.findViewById(R.id.grade_tv_4);
-/*			grade_tv_1.setTypeface(Constant.setFonts(this));
-			grade_tv_2.setTypeface(Constant.setFonts(this));
-			grade_tv_3.setTypeface(Constant.setFonts(this));
-			grade_tv_4.setTypeface(Constant.setFonts(this));*/
 			if(++col%2==0){
 				grade_tv_1.setText(++gameCount+"");
 				grade_tv_2.setText(++gameCount+"");
@@ -138,8 +126,11 @@ public class MenuActivity extends Activity implements OnClickListener {
 				Resources resources=getBaseContext().getResources(); 
 				Drawable drawable=resources.getDrawable(R.drawable.button_select); 
 				grade_tv_1.setBackgroundDrawable(drawable);
+				drawable=resources.getDrawable(R.drawable.button_select);
 				grade_tv_2.setBackgroundDrawable(drawable);
+				drawable=resources.getDrawable(R.drawable.button_select);
 				grade_tv_3.setBackgroundDrawable(drawable);
+				drawable=resources.getDrawable(R.drawable.button_select);
 				grade_tv_4.setBackgroundDrawable(drawable);
 			}
 			
@@ -149,11 +140,15 @@ public class MenuActivity extends Activity implements OnClickListener {
 				switch (over) {
 				case 3:
 					grade_tv_1.setBackgroundDrawable(drawable);
+					drawable=resources.getDrawable(R.drawable.button_select); 
 					grade_tv_2.setBackgroundDrawable(drawable);
+					drawable=resources.getDrawable(R.drawable.button_select); 
 					grade_tv_3.setBackgroundDrawable(drawable);
 					break;
 				case 2:
+					drawable=resources.getDrawable(R.drawable.button_select); 
 					grade_tv_1.setBackgroundDrawable(drawable);
+					drawable=resources.getDrawable(R.drawable.button_select); 
 					grade_tv_2.setBackgroundDrawable(drawable);
 					break;
 				case 1:
@@ -185,5 +180,9 @@ public class MenuActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	
+
+	public void onPause() {
+		super.onPause();
+		MobclickAgent.onPause(this);
+	}
 }
