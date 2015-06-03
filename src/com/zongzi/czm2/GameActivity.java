@@ -146,8 +146,10 @@ public class GameActivity extends Activity implements OnClickListener,
 				CustomDialog dialog = new CustomDialog(this, R.style.mystyle,
 						R.layout.customdialog, 1);
 				dialog.show();
-				Constant.myMoney += 10;
-				AppConnect.getInstance(this).awardPoints(10);
+				if(Constant.select_count>=Constant.pass_count){
+					Constant.myMoney += 10;
+					AppConnect.getInstance(this).awardPoints(10);
+				}
 			} else {
 				if (Constant.myMoney >= 5) {
 					Toast.makeText(this, "错了扣除5个金币", Toast.LENGTH_SHORT).show();
