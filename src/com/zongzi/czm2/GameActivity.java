@@ -141,14 +141,18 @@ public class GameActivity extends Activity implements OnClickListener,
 			TextView textView = (TextView) v;
 			answerTextView.setText(textView.getText());
 			if (textView.getText().equals(message.getAnswer())) {
-
-				++Constant.select_count;
-				CustomDialog dialog = new CustomDialog(this, R.style.mystyle,
-						R.layout.customdialog, 1);
-				dialog.show();
+				Log.e("pass_select", Constant.pass_count+"_"+Constant.select_count);
 				if(Constant.select_count>=Constant.pass_count){
 					Constant.myMoney += 10;
 					AppConnect.getInstance(this).awardPoints(10);
+					CustomDialog dialog = new CustomDialog(this, R.style.mystyle,
+							R.layout.customdialog, 1);
+					dialog.show();
+					++Constant.select_count;
+				}else {
+					Toast.makeText(this, "恭喜答对了,但是不能再给你金币了", Toast.LENGTH_SHORT).show();
+					++Constant.select_count;
+					initAnswer();
 				}
 			} else {
 				if (Constant.myMoney >= 5) {
